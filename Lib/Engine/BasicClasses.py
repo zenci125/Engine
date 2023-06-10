@@ -41,7 +41,7 @@ class Identifier:
     def get_value(self):
         return self.id
 
-    def __eq__(self, other): # добавлено
+    def __eq__(self, other):       # добавлено
         return self.id == other.id
 
 
@@ -92,7 +92,7 @@ class Entity:
 
 class EntityList:
     def __init__(self, entities=None):
-        if entities == None:
+        if entities is None:
             entities = []
         self.entities = entities
 
@@ -138,7 +138,7 @@ class Game:
         class GameEntity(Entity):
             def __init__(kself):
                 super().__init__(self.cs)
-
+                self.entities.append(kself)
         return GameEntity
 
     def get_ray_class(self):
@@ -188,25 +188,26 @@ class Game:
                 self.set_property("drawlist", drawlist)
                 self.set_property("look_at", look_at)
 
-            def get_rays_matrix(self, n: int, m: int): #добавлено
+            def get_rays_matrix(self, n: int, m: int):   # добавлено
                 res = llm.Matrix(n, m)
                 alpha, beta = self.fov, self.vfov
                 dalpha, dbeta = alpha/n, beta/m
-                vec = self.direction
 
-                if self.direction != None:
-                    helper = []
+                if self.direction is not None:
                     vec = self.direction
 
                     for i in range(n):
                         for j in range(m):
-                            ray = llm.Matrix.get_rotation_matrix([0, 1], dalpha * i - (alpha / 2), 3) * llm.Matrix.get_rotation_matrix([0, 2], dbeta * j - (beta / 2), 3) * vec
+                            ray = llm.Matrix.get_rotation_matrix([0, 1], dalpha * i - (alpha / 2), 3)\
+                                  * llm.Matrix.get_rotation_matrix([0, 2], dbeta * j - (beta / 2), 3) * vec
                             res[i][j] = ray
                     return res
 
-                if self.look_at != None:
+                if self.look_at is not None:
                     cs = None
                     return Ray(cs, self.pos, (self.look_at - self.pos).norm())
+
+        return GameCamera
 
 
 
