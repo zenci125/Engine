@@ -249,9 +249,9 @@ class Game:
 
     def HyperEllipsoid(self):
         class GameHyperEllipsoid(self.get_object()):
-            def __init__(kself, pos: llm.Point, direction: llm.Vector, semiaxes: list[float]):
+            def __init__(self, pos: llm.Point, direction: llm.Vector, semiaxes: list[float]):
                 super().__init__(pos, direction)
-                kself.set_property("semiaxes", semiaxes)
+                self.set_property("semiaxes", semiaxes)
 
             def planar_rotate(self, inds: list, angle: float):
                 super().planar_rotate(inds, angle)
