@@ -212,18 +212,90 @@ class Game:
                         pr_direction = llm.Matrix.get_rotation_matrix([0, 1], ai, 3) * llm.Matrix.get_rotation_matrix(
                             [0, 2], bi, 3)
                         pr_direction *= direction.transpose() * (
-                                    direction.length() ** 2 / direction.scalar_product(pr_direction))
+                                direction.length() ** 2 / direction.scalar_product(pr_direction))
                         res[i][j] = Ray(self.cs, self["position"], pr_direction)
 
                 return res
 
         return GameCamera
 
-    def HuperPlane(self):
-        class __init__(self.get_object()):
-            def __init(kself, pos: llm.Point, normal: Vector) -> None:
+    def HyperPlane(self):
+        class GameHyperPlane(self.get_object()):
+            def __init(self, pos: llm.Point, normal: llm.Vector) -> None:
                 super().__init__(pos, normal)
-                kself.set_property("position", pos)
-                kself.set_property("normal", normal)
-                kself.set_Property("direction", kself["direction"] )
+
+            def intersection_distance(self, ray: Ray):
+                ray_pt = ray.initialpt.transpose()
+                ray_dir = ray.direction.transpose()
+                abc = self.direction.transpose()
+                pos = self.position.transpose()
+
+                if abc % ray_dir == 0:
+                    if abc % (ray_pt - pos) == 0:
+                        return 0
+
+                    else:
+                        raise enex.EngineException("Parallel ray and hyperplane")
+
+                else:
+                    t = -(abc % (ray_pt - pos)) / (abc % ray_dir)
+
+                    if t < 0:
+                        return -1
+                    else:
+                        return (ray_dir * t).length()
+
+        return GameHyperPlane
+
+    def HyperEllipsoid(self):
+        class GameHyperEllipsoid(self.get_object()):
+            def __init__(kself, pos: llm.Point, direction: llm.Vector, semiaxes: list[float]):
+                super().__init__(pos, direction)
+                kself.set_property("semiaxes", semiaxes)
+
+            def planar_rotate(self, inds: list, angle: float):
+                super().planar_rotate(inds, angle)
+
+            def rotate_3d(self, angles: list):
+                super().rotate_3d(angles)
+
+            def intersection_distance(self, ray: Ray):
+                ray_pt = ray.initialpt.transpose()  # [[1], [2], [3]]
+                ray_dir = ray.direction.transpose()
+                ellips_dir = self.direction.transpose()
+
+                A = (ray_dir[0] / ellips_dir[0]) ** 2 + (ray_dir[1] / ellips_dir[1]) ** 2 + (
+                            ray_dir[2] / ellips_dir[2]) ** 2
+                B = 2 * ((ray_dir[0] * ray_pt[0]) / (ellips_dir[0] ** 2) + (
+                        ray_dir[1] * ray_pt[1]) / (ellips_dir[1] ** 2) + (ray_dir[2] * ray_pt[2]) / (
+                                 ellips_dir[2] ** 2))
+                C = (ray_pt[0] / ellips_dir[0]) ** 2 + (ray_pt[1] / ellips_dir[1]) ** 2 + (
+                            ray_pt[2] / ellips_dir[2]) ** 2 - 1
+
+                disc = B ** 2 - 4 * A * C
+
+                if disc < 0:
+                    return -1
+
+                else:
+                    t1 = (-B + disc ** 0.5) / (2 * A)
+                    t2 = (-B - disc ** 0.5) / (2 * A)
+
+                    v1 = ray_dir * t1
+                    v2 = ray_dir * t2
+
+                    if t1 > 0 and t2 > 0:
+                        return min(v1.length(), v2.length())
+
+                    elif t1 > 0 and t2 <= 0:
+                        return v1.length()
+
+                    elif t1 <= 0 and t2 > 0:
+                        return v2.length()
+
+                    else:
+                        return -1
+
+        return GameHyperEllipsoid
+
 

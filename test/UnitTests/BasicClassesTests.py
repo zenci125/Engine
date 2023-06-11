@@ -87,3 +87,34 @@ class TestsGameObject:
         res = llm.Vector([[-1], [0], [2]])
 
         assert obj["direction"] == res
+
+'''v1 = llm.Vector([1, 0, 0])
+v2 = llm.Vector([0, 1, 0])
+v3 = llm.Vector([0, 0, 1])
+vs = llm.VectorSpace([v1, v2, v3])
+
+point = llm.Point([0, 0, 0])
+cs = llm.CoordinateSystem(point, vs)
+entity1 = Entity(cs)
+entitylist = EntityList([entity1])
+game = Game(cs, entitylist)
+
+plane = game.HyperPlane()(llm.Point([0, 0, 1]), llm.Vector([0, 0, -1]))
+ray = Ray(cs, llm.Point([[0, 0, 0]]), llm.Vector([[0, 0, 1]]))
+print(plane.intersection_distance(ray))'''
+
+'''v1 = llm.Vector([1, 0, 0])
+v2 = llm.Vector([0, 1, 0])
+v3 = llm.Vector([0, 0, 1])
+vs = llm.VectorSpace([v1, v2, v3])
+
+point = llm.Point([0, 0, 0])
+cs = llm.CoordinateSystem(point, vs)
+entity1 = Entity(cs)
+entitylist = EntityList([entity1])
+game = Game(cs, entitylist)
+
+plane = game.HyperEllipsoid()(llm.Point([1, 1, 1]), llm.Vector([-3, -2, -4]), [1, 1, 1])
+ray = Ray(cs, llm.Point([[1, 1, 1]]), llm.Vector([[1, 1, 1]]))
+
+print(plane.intersection_distance(ray))'''
