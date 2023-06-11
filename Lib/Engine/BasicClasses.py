@@ -4,7 +4,6 @@ import time
 import math
 import random
 
-
 precision = 4
 
 
@@ -41,7 +40,7 @@ class Identifier:
     def get_value(self):
         return self.id
 
-    def __eq__(self, other):       # добавлено
+    def __eq__(self, other):
         return self.id == other.id
 
 
@@ -138,7 +137,7 @@ class Game:
         class GameEntity(Entity):
             def __init__(kself):
                 super().__init__(self.cs)
-                self.entities.append(kself)
+
         return GameEntity
 
     def get_ray_class(self):
@@ -177,43 +176,47 @@ class Game:
 
     def get_camera(self):
         class GameCamera(self.get_object()):
-            def __init__(self, pos: llm.Point, fov, drawlist, direction: llm.Vector = None, vfov = None, look_at: llm.Point = None):
-                super().__init__(pos, direction)
+            def __init__(self, pos: llm.Point, fov: float, drawdist: float, look_at: llm.Point = None,
+                         vfov: float = None):
+                super().__init__(pos, look_at)
 
                 if vfov is None:
-                    vfov = fov
+                    vfov = math.atan((16 / 9) * math.tan(math.radians(fov) / 2))
+                    self.set_property("vfov", vfov)
+
+                else:
+                    self.set_property("vfov", math.radians(vfov))
 
                 self.set_property("fov", math.radians(fov))
-                self.set_property("vfov", math.radians(vfov))
-                self.set_property("drawlist", drawlist)
-                self.set_property("look_at", look_at)
+                self.set_property("drawdist", drawdist)
 
-            def get_rays_matrix(self, n: int, m: int):   # добавлено
+                if look_at is not None:
+                    self.set_property("look_at", look_at)
+
+            def get_rays_matrix(self, n: int, m: int):
                 res = llm.Matrix(n, m)
                 alpha, beta = self.fov, self.vfov
-                dalpha, dbeta = alpha/n, beta/m
+                dalpha, dbeta = alpha / n, beta / m
 
-                if self.direction is not None:
-                    vec = self.direction
+                if self["direction"] is None:
+                    direction = llm.Vector(
+                        [self["look_at"][i] - self["position"][i] for i in range(len(self["look_at"]))])
 
-                    for i in range(n):
-                        for j in range(m):
-                            ray = llm.Matrix.get_rotation_matrix([0, 1], dalpha * i - (alpha / 2), 3)\
-                                  * llm.Matrix.get_rotation_matrix([0, 2], dbeta * j - (beta / 2), 3) * vec
-                            res[i][j] = ray
-                    return res
+                else:
+                    direction = self["direction"]
 
-                if self.look_at is not None:
-                    cs = None
-                    return Ray(cs, self.pos, (self.look_at - self.pos).norm())
+                for i in range(n):
+                    ai = dalpha * i - (alpha / 2)
+                    for j in range(m):
+                        bi = dalpha * i - (beta / 2)
+                        pr_direction = llm.Matrix.get_rotation_matrix([0, 1], ai, 3) * llm.Matrix.get_rotation_matrix(
+                            [0, 2], bi, 3)
+                        pr_direction *= direction.transpose() * (
+                                    direction.length() ** 2 / direction.scalar_product(pr_direction))
+                        res[i][j] = Ray(self.cs, self["position"], pr_direction)
+
+                return res
 
         return GameCamera
-
-
-
-
-
-
-
 
 
