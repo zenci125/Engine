@@ -29,7 +29,7 @@ class GameConfiguration:
         a = filepath
         try:
             file = open(a, "r")
-            for item in file.readline():
+            for item in file.readlines():
                 self.configuration[item.split(': ')[0]] = (item.split(': ')[1]).split("\n")[0]
             file.close()
         except:
