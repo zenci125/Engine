@@ -39,10 +39,10 @@ class GameConfiguration:
         try:
             if filepath is None:
                 filepath = self.filepath
-                file = open(filepath, "w")
-                for key in self.configuration.keys():
-                    file.write(f"{key}: {self.configuration[key]}\n")
-                file.close()
+            file = open(filepath, "w")
+            for key in self.configuration.keys():
+                file.write(f"{key}: {self.configuration[key]}\n")
+            file.close()
         except:
             raise enex.EngineException(enex.EngineException.NOT_FOUND_FILE)
 
