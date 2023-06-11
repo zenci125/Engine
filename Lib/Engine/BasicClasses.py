@@ -219,4 +219,11 @@ class Game:
 
         return GameCamera
 
+    def HuperPlane(self):
+        class __init__(self.get_object()):
+            def __init(kself, pos: llm.Point, normal: Vector) -> None:
+                super().__init__(pos, normal)
+                kself.set_property("position", pos)
+                kself.set_property("normal", normal)
+                kself.set_Property("direction", kself["direction"] )
 

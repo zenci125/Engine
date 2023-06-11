@@ -325,7 +325,7 @@ def BilinearForm(mtrx, v1, v2):
 
 
 class Point(Vector):
-    def __inti__(self, val):
+    def __init__(self, val):
         if isinstance(val, Vector):
             super().__init__(val.data)
         else:
