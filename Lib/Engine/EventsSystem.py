@@ -1,7 +1,3 @@
-import Lib.Math.LowLevelMath as llm
-import Lib.Engine.BasicClasses as en
-import Lib.Engine.GraphicClasses as gs
-
 class EventSystem:
     def __init__(self, events: dict):
         self.events = events
